@@ -23,6 +23,10 @@ const UserModelSchema=new mongoose.Schema({
     Refreshtoken:{
         type:String,
         // default:""
+    },
+    isAdmin:{
+        type:Boolean,
+        default:false
     }
 })
 const UserModel=new mongoose.model('UserDetails',UserModelSchema);

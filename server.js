@@ -9,7 +9,10 @@ const mongoose = require('mongoose');
 dotenv.config()
 const app = express();
 app.use(cookieParser());
-app.use(cors());
+app.use(cors({
+    origin: 'http://localhost:3000',
+    credentials: true
+}));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }))
 // !To add /Api as starting rout to all Routes 
@@ -20,7 +23,7 @@ app.use(express.urlencoded({ extended: true }))
 mongoose.connect(process.env.MONGODB_LINK, { useUnifiedTopology: true, useNewUrlParser: true })
     .then(data => console.log("database connected succesfully👍"))
     .catch(err => console.error(err))
-app.use("/Api",require('./Routes/Login_register'))
+app.use("/Api", require('./Routes/Login_register'))
 app.use("/Api/User", require('./Routes/User.js'))
 
 

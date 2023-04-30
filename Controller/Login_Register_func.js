@@ -1,16 +1,20 @@
 const UserModel=require('../Model/UserModel')
 const {hash ,compare}=require('bcryptjs');
+const { verify } = require('jsonwebtoken');
 const{generateAcessToken,generateRefreshToken,sendAcessToken,sendRefreshToken}=require('./Tokens_Func')
 
 const Register=async(req,res)=>{
-    const{Username,Gmail,Password}=req.body
+    const{Username,Email,Password,ConfirmPassword}=req.body
     // console.log(req.body);
-    try{
+    if(!Username || !Email || !Password || !ConfirmPassword){
+        return res.send({message:"Fill all Fields",type:2})
 
-        if(!Username || !Gmail || !Password){
-            throw new Error("Fill all Fileds")
-        }
-        const result=await UserModel.findOne({Gmail:Gmail})
+    }
+    else if(Password!==ConfirmPassword){
+        return res.send({message:"Confirm Password doesnt match",type:3})
+    }
+    try{
+        const result=await UserModel.findOne({Gmail:Email})
         if(result){
             throw new Error("User already exists")
         }
@@ -18,7 +22,7 @@ const Register=async(req,res)=>{
         // console.log(hashpassword)
         const new_user=new UserModel({
             Username:Username,
-            Gmail:Gmail,
+            Gmail:Email,
             Password:hashpassword,
         })
         const saved =new_user.save();
@@ -31,7 +35,7 @@ const Register=async(req,res)=>{
 }
 const Login=async(req,res)=>{
     const{Gmail,Password}=req.body;
-    console.log(req.body);
+    // console.log(req.body);
     try{
         if(!Gmail||!Password){
             throw new Error ("Fill all Fields")
@@ -46,10 +50,12 @@ const Login=async(req,res)=>{
         }
         const accessToken=generateAcessToken(user.Uid);
         const refreshToken=generateRefreshToken(user.Uid);
-
+console.log(user)
         const update_data=await UserModel.findOneAndUpdate({Gmail},{Refreshtoken:refreshToken},{new:true});
         sendRefreshToken(req,res,refreshToken);
-        sendAcessToken(req,res,accessToken);
+        // sendAcessToken(req,res,accessToken);
+        res.status(200).send({
+            accesstoken:accessToken,user})
     }catch(err){
         return res.status(500).json({error:err.message});
     }
@@ -57,9 +63,9 @@ const Login=async(req,res)=>{
 }
 const RefreshToken=async(req,res)=>{
     try{
-        console.log(req.cookies)
+        // console.log(req.cookies,"Cookies")
             const token=req.cookies.refreshToken
-        console.log(token);
+        // console.log(token);
         if(!token){
             const error =new Error("Session has expired token not their")
             error.accesstoken=""
@@ -68,21 +74,23 @@ const RefreshToken=async(req,res)=>{
         let payload=null;
         try{
             payload=verify(token,process.env.REFRESHTOKEN_SECERET);
+            // console.log(payload,"Payload")
         }
         catch(e){
+            // console.log(e.message,"error")
             const error =new Error("Session has expired")
             error.accesstoken=""
             throw error
         }
-        console.log(payload)
+        // console.log(payload,"payload")
         const user= await UserModel.findOne({Uid:payload.uid});
         if(!user){
             const error =new Error("Session has expired")
             error.accesstoken=""
             throw error
         }
-        console.log(user.refreshtoken)
-        if(user.refreshtoken!==token){
+        // console.log(user.Refreshtoken)
+        if(user.Refreshtoken!==token){
             const error =new Error("Session has expired")
             error.accesstoken=""
             throw error

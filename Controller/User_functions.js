@@ -45,6 +45,7 @@ const GetPackageData=async(link)=>{
 
 const CheckReactRepoMiddleware=async(req,res,next)=>{
   const { link } = req.body;
+  // console.log(link)
   if(!link)return res.send("empty ")
     try {
         console.log(link)
@@ -52,13 +53,16 @@ const CheckReactRepoMiddleware=async(req,res,next)=>{
         // !extracting owener name and repo name
         const match = link.match(regexlink);
         // !if match id null means repos link is not properly entered
+        // console.log(match)
         if (match == null) {
-          return res.send({message:"Invalid link",type:1});
+          return res.status(401).send({message:"Invalid link",type:3});
         }
         // console.log(`token ${process.env.GITHUB_TOKEN}`)
         const owner_name = match[1];
         const repo = match[2];
         const url = `https://api.github.com/repos/${owner_name}/${repo}`;
+        // console.log(owner);
+        // console.log(repo);
       
         
         // !Make a request to GitHub API to fetch repository details
@@ -110,7 +114,7 @@ const CheckNodeRepoMiddleware=async(req,res,next)=>{
     const match = link.match(regexlink);
     // !if match id null means repos link is not properly entered
     if (match == null) {
-      return res.send({message:"Invalid link",type:1});
+      return res.status(400).send({message:"Invalid link",type:1});
     }
     const owner_name = match[1];
     const repo = match[2];
