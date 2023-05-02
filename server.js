@@ -27,5 +27,5 @@ mongoose.connect(process.env.MONGODB_LINK, { useUnifiedTopology: true, useNewUrl
     app.use("/Api", require('./Routes/Login_register'))
 
 
-app.listen(process.env.PORT, () => console.log("SUCESSFULLY RUNNING ON PORT"))
+app.listen(4000, () => console.log("SUCESSFULLY RUNNING ON PORT"))
 

@@ -1,7 +1,7 @@
 const UserModel=require('../Model/UserModel')
 const {hash ,compare}=require('bcryptjs');
 const { verify } = require('jsonwebtoken');
-const{generateAcessToken,generateRefreshToken,sendAcessToken,sendRefreshToken}=require('./Tokens_Func')
+const{generateAcessToken,generateRefreshToken,sendAcessToken,sendRefreshToken,}=require('./Tokens_Func')
 
 const Register=async(req,res)=>{
     const{Username,Gmail,Password,ConfirmPassword}=req.body
@@ -107,15 +107,20 @@ const RefreshToken=async(req,res)=>{
         console.log(accessToken,user,"Refresh ka smaan hai");
         res.status(200).send({accesstoken:accessToken,user})
         // sendAcessToken(req,res,accessToken);
-    }catch(err){
-        console.log(err.message)
-        res.status(500).json({error:err.message});
+    }catch(error){
+        console.log(error.message)
+        res.status(500).json({error:error.message});
     }
 }
+const clear_cookie=(req,res)=>{
+    res.clearCookie('refreshToken', { path: '/Api/RefreshToken' });
+    res.send("clear cookie")
+  }
 
 
 module.exports={
      Register,
      Login,
-     RefreshToken
+     RefreshToken,
+     clear_cookie
 }

@@ -22,7 +22,7 @@ const sendAcessToken = (req, res, accesstoken) => {
 }
 const sendRefreshToken = (req, res, refreshToken) => {
     res.cookie("refreshToken", refreshToken, {
-        httpOnly: true,
+        httpOnly: false,
         path: "/Api/RefreshToken",
         SameSite:"None"
         // ! is path ke liye hi yeh cookie bhejega client ager route is path se start hoga tabi hi cookie ayehi backend mai
