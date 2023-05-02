@@ -4,9 +4,9 @@ const { verify } = require('jsonwebtoken');
 const{generateAcessToken,generateRefreshToken,sendAcessToken,sendRefreshToken}=require('./Tokens_Func')
 
 const Register=async(req,res)=>{
-    const{Username,Email,Password,ConfirmPassword}=req.body
+    const{Username,Gmail,Password,ConfirmPassword}=req.body
     // console.log(req.body);
-    if(!Username || !Email || !Password || !ConfirmPassword){
+    if(!Username || !Gmail || !Password || !ConfirmPassword){
         return res.send({message:"Fill all Fields",type:2})
 
     }
@@ -14,22 +14,22 @@ const Register=async(req,res)=>{
         return res.send({message:"Confirm Password doesnt match",type:3})
     }
     try{
-        const result=await UserModel.findOne({Gmail:Email})
+        const result=await UserModel.findOne({Gmail:Gmail})
         if(result){
-            throw new Error("User already exists")
+            throw new Error("Email already exists")
         }
         const hashpassword=await hash(Password,10);
         // console.log(hashpassword)
         const new_user=new UserModel({
             Username:Username,
-            Gmail:Email,
+            Gmail:Gmail,
             Password:hashpassword,
         })
         const saved =new_user.save();
         // console.log("New user saved");
-        res.status(200).json("Registerted successfully")
+        res.status(200).json({message:`${Username} Registerted successfully`,type:1})
     }catch(e){
-        res.status(500).json({error:e.message})
+        res.status(500).json({error:e.message,type:2})
     }
 
 }
@@ -55,17 +55,20 @@ console.log(user)
         sendRefreshToken(req,res,refreshToken);
         // sendAcessToken(req,res,accessToken);
         res.status(200).send({
-            accesstoken:accessToken,user})
+            message:`${user.Username} Logged in successfully`,
+            type:1 ,
+            accesstoken:accessToken,
+            user})
     }catch(err){
-        return res.status(500).json({error:err.message});
+        return res.status(500).json({message:err.message,type:3});
     }
 
 }
 const RefreshToken=async(req,res)=>{
     try{
-        // console.log(req.cookies,"Cookies")
+        console.log(req.cookies,"Cookies")
             const token=req.cookies.refreshToken
-        // console.log(token);
+        console.log(token);
         if(!token){
             const error =new Error("Session has expired token not their")
             error.accesstoken=""
@@ -82,6 +85,7 @@ const RefreshToken=async(req,res)=>{
             error.accesstoken=""
             throw error
         }
+        console.log(payload)
         // console.log(payload,"payload")
         const user= await UserModel.findOne({Uid:payload.uid});
         if(!user){
@@ -100,7 +104,9 @@ const RefreshToken=async(req,res)=>{
 
         const update_data=await UserModel.findOneAndUpdate({Gmail:user.Gmail},{Refreshtoken:refreshToken},{new:true});
         sendRefreshToken(req,res,refreshToken);
-        sendAcessToken(req,res,accessToken);
+        console.log(accessToken,user,"Refresh ka smaan hai");
+        res.status(200).send({accesstoken:accessToken,user})
+        // sendAcessToken(req,res,accessToken);
     }catch(err){
         console.log(err.message)
         res.status(500).json({error:err.message});

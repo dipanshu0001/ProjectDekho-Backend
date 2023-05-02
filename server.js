@@ -23,8 +23,8 @@ app.use(express.urlencoded({ extended: true }))
 mongoose.connect(process.env.MONGODB_LINK, { useUnifiedTopology: true, useNewUrlParser: true })
     .then(data => console.log("database connected succesfully👍"))
     .catch(err => console.error(err))
-app.use("/Api", require('./Routes/Login_register'))
-app.use("/Api/User", require('./Routes/User.js'))
+    app.use("/Api/User", require('./Routes/User.js'))
+    app.use("/Api", require('./Routes/Login_register'))
 
 
 app.listen(process.env.PORT, () => console.log("SUCESSFULLY RUNNING ON PORT"))
