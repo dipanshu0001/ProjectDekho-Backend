@@ -1,9 +1,11 @@
 const ProjectModel = require('../Model/UserProject');
+const cloudinary =  require('cloudinary');
 // const fetch = require('node-fetch');
 const request = require('request');
 const axios = require('axios');
 const AddProject = async (req, res) => {
-    const { Name, Description, Github_react,Github_node, Contact, Deployed_link, Image} = req.body;
+    const file = req.files.Image;
+    const { Name, Description, Github_react,Github_node, Contact, Deployed_link} = req.body;
     if (!Name || !Description || !Contact || !Deployed_link ) {
         return res.status(400).send({ message: "Fill All Fileds", type: 2 })
     }
@@ -12,19 +14,22 @@ const AddProject = async (req, res) => {
     }
     try {
       let value=(Github_react!=="" && Github_node!=="")
+      cloudinary.v2.uploader.upload(file.tempFilePath, (err, result) => {
         const new_document = new ProjectModel({
           uid:"UPLOAD USER KI UID AYEGI IDHER ",
             Name,
-  Description,
+            Description,
             Github_react,
             Github_node,
             Contact,
             Deployed_link,
-            // Image,
+            Image:result.url,
             isFullStack:value
         })
-        const result = await new_document.save();
+        new_document.save();
         res.status(200).send({ message: "Project Uploaded Sucessfully", type: 1 });
+    }) 
+
 
     } catch (e) {
       console.log(e.message)
