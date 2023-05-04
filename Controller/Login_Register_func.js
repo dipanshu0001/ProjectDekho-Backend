@@ -66,7 +66,7 @@ console.log(user)
 }
 const RefreshToken=async(req,res)=>{
     try{
-        console.log(req.cookies,"Cookies")
+        // console.log(req.cookies,"Cookies")
             const token=req.cookies.refreshToken
         console.log(token);
         if(!token){

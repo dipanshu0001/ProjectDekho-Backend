@@ -4,8 +4,9 @@ const cloudinary =  require('cloudinary');
 const request = require('request');
 const axios = require('axios');
 const AddProject = async (req, res) => {
-    const file = req.files.Image;
+    // const file = req.files.Image;
     const { Name, Description, Github_react,Github_node, Contact, Deployed_link} = req.body;
+  console.log(req.body,req.files);
     if (!Name || !Description || !Contact || !Deployed_link ) {
         return res.status(400).send({ message: "Fill All Fileds", type: 2 })
     }
@@ -23,7 +24,7 @@ const AddProject = async (req, res) => {
             Github_node,
             Contact,
             Deployed_link,
-            Image:result.url,
+            // Image:result.url,
             isFullStack:value
         })
         new_document.save();
