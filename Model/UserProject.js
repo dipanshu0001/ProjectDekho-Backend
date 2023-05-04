@@ -41,8 +41,72 @@ const ProjectSchema = new mongoose.Schema({
     timestamp:{
         type:Date,
         default:Date.now()
-    }
+    },
+    like:
+    {
+        type:Number,
+        default:0
+    },
+    dislike:
+    {
+        type:Number,
+        default:0
+    },
+    likePeople:
+    [
+        {
+            Uid:
+            {
+                type:String
+            },
+            username:
+            {
+                type:String
+            }
+        }
+    ],
+    dislikePeople:
+    [
+        {
+            Uid:
+            {
+                type:String
+            },
+            username:
+            {
+                type:String
+            }
+        }
+    ]
 })
+ProjectSchema.methods.increaseCount=async function(_id,username){
+    try{
+        var new_people = { Uid: _id, username: username };
+       
+        this.likePeople.push(new_people);
+        this.like = this.like+1;
+        await this.save();
+        return this.like;
+  
+    }catch(error){
+        console.log(error);
+    }
+  
+}
+ProjectSchema.methods.decreaseCount=async function(_id,username){
+    try{
+        var new_people = { Uid: _id, username: username };
+       
+        this.dislikePeople.push(new_people);
+        this.dislike = this.dislike+1;
+        await this.save();
+        return this.like;
+  
+    }catch(error){
+        console.log(error);
+    }
+  
+  }
 const ProjectModel=new mongoose.model("PorjectDetails",ProjectSchema);
 
 module.exports=ProjectModel;

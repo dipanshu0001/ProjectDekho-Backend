@@ -27,7 +27,15 @@ const UserModelSchema=new mongoose.Schema({
     isAdmin:{
         type:Boolean,
         default:false
-    }
+    },
+    likedProjects:
+    [
+
+    ],
+    dislikedProjects:
+    [
+        
+    ]
 })
 const UserModel=new mongoose.model('UserDetails',UserModelSchema);
 
