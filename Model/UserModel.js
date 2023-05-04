@@ -30,13 +30,54 @@ const UserModelSchema=new mongoose.Schema({
     },
     likedProjects:
     [
-
+        {
+            _id:
+            {
+                type:String
+            }
+        }
     ],
     dislikedProjects:
     [
-        
+        {
+            _id:
+            {
+                type:String
+            }
+        }       
     ]
 })
+UserModelSchema.methods.increaseCount=async function(_id){
+    try{
+        console.log(_id)
+        var new_people = { _id: _id };
+     
+        this.likedProjects.push(new_people);
+       
+        
+        await this.save();
+        
+        return this.likedProjects;
+  
+    }catch(error){
+        console.log(error);
+    }
+  
+}
+UserModelSchema.methods.decreaseCount=async function(_id){
+    try{
+        var new_people = { _id: _id };
+       
+        this.dislikedProjects.push(new_people);
+        
+        await this.save();
+        return this.dislikedProjects;
+  
+    }catch(error){
+        console.log(error);
+    }
+  
+  }
 const UserModel=new mongoose.model('UserDetails',UserModelSchema);
 
 module.exports=UserModel;
