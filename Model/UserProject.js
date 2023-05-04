@@ -77,8 +77,35 @@ const ProjectSchema = new mongoose.Schema({
                 type:String
             }
         }
+    ],
+    comments:
+    [
+        {
+            Uid:
+            {
+                type:String
+            },
+            comment:
+            {
+                type:String
+            }      
+        }
     ]
 })
+ProjectSchema.methods.comment_handle=async function(_id,comment){
+    try{
+        var new_comment = { Uid: _id, comment: comment };
+       
+        this.comments.push(new_comment);
+       
+        await this.save();
+        return this.comments;
+  
+    }catch(error){
+        console.log(error);
+    }
+  
+}
 ProjectSchema.methods.increaseCount=async function(_id,username){
     try{
         var new_people = { Uid: _id, username: username };

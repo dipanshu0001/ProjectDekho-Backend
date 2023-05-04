@@ -9,7 +9,22 @@ const getAllProjects = async(req, res) => {
         res.status(500).json({error:error.message})
     }
 }
-
+const comment_section_handler=async(req,res)=>
+{
+    try {
+        const id =  req.params.id
+        const userid = req.params.user
+        console.log(id,userid)
+        console.log(req.body)
+        const projectDetails = await projectModel.findOne({_id:id})
+        const finduser_who_comment = await userModel.findOne({Username:userid})
+        await projectDetails.comment_handle(finduser_who_comment.Uid,req.body.comment);
+        await projectDetails.save();  
+        res.status(200).json("comment added successfully")
+    } catch (error) {
+        res.status(500).json({error:error.message})
+    }
+}
 const like_count_handler=async(req,res)=>
 {
     try {
@@ -74,4 +89,4 @@ const like_count_handler=async(req,res)=>
     }
 }
 
-module.exports = { getAllProjects,like_count_handler }
+module.exports = { getAllProjects,like_count_handler,comment_section_handler }

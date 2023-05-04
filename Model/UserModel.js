@@ -45,7 +45,8 @@ const UserModelSchema=new mongoose.Schema({
                 type:String
             }
         }       
-    ]
+    ],
+    
 })
 UserModelSchema.methods.increaseCount=async function(_id){
     try{
