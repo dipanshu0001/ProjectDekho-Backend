@@ -6,11 +6,11 @@ const { sign } = require("jsonwebtoken");
 
 
 const generateAcessToken = (uid) => {
-    console.log(process.env.ACESSTOKEN_SECERET)
+    // console.log(process.env.ACESSTOKEN_SECERET)
     return sign({ uid }, process.env.ACESSTOKEN_SECERET, { expiresIn: "15m" })
 }
 const generateRefreshToken = (uid) => {
-    console.log(process.env.REFRESHTOKEN_SECERET)
+    // console.log(process.env.REFRESHTOKEN_SECERET)
     return sign({ uid }, process.env.REFRESHTOKEN_SECERET, { expiresIn: "7d" });
 }
 

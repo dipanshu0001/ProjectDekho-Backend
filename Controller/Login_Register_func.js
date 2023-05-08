@@ -68,7 +68,7 @@ const RefreshToken=async(req,res)=>{
     try{
         // console.log(req.cookies,"Cookies")
             const token=req.cookies.refreshToken
-        console.log(token);
+        // console.log(token);
         if(!token){
             const error =new Error("Session has expired token not their")
             error.accesstoken=""
@@ -85,7 +85,7 @@ const RefreshToken=async(req,res)=>{
             error.accesstoken=""
             throw error
         }
-        console.log(payload)
+        // console.log(payload)
         // console.log(payload,"payload")
         const user= await UserModel.findOne({Uid:payload.uid});
         if(!user){
@@ -104,11 +104,11 @@ const RefreshToken=async(req,res)=>{
 
         const update_data=await UserModel.findOneAndUpdate({Gmail:user.Gmail},{Refreshtoken:refreshToken},{new:true});
         sendRefreshToken(req,res,refreshToken);
-        console.log(accessToken,user,"Refresh ka smaan hai");
+        // console.log(accessToken,user,"Refresh ka smaan hai");
         res.status(200).send({accesstoken:accessToken,user})
         // sendAcessToken(req,res,accessToken);
     }catch(error){
-        console.log(error.message)
+        // console.log(error.message)
         res.status(500).json({error:error.message});
     }
 }
@@ -117,10 +117,21 @@ const clear_cookie=(req,res)=>{
     res.send("clear cookie")
   }
 
+  const GetUser=async(req,res)=>{
+    try{
+        const {Uid}=req.body
+      const result=await UserModel.findOne({Uid});
+      if(result)
+      return res.send({details:result})
+    }catch(err){
+        res.send(err.message)
+    }
+  }
 
 module.exports={
      Register,
      Login,
      RefreshToken,
-     clear_cookie
+     clear_cookie,
+     GetUser
 }
