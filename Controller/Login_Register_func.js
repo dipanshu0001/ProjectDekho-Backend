@@ -1,17 +1,21 @@
 const UserModel=require('../Model/UserModel')
 const {hash ,compare}=require('bcryptjs');
 const { verify } = require('jsonwebtoken');
+const cloudinary =  require('cloudinary');
+const axios = require('axios');
 const{generateAcessToken,generateRefreshToken,sendAcessToken,sendRefreshToken,}=require('./Tokens_Func')
 
 const Register=async(req,res)=>{
-    const{Username,Gmail,Password,ConfirmPassword}=req.body
-    // console.log(req.body);
-    if(!Username || !Gmail || !Password || !ConfirmPassword){
-        return res.send({message:"Fill all Fields",type:2})
+    const{Username,Gmail,Password,ConfirmPassword}=JSON.parse(req.body.userDetails)
+    const file=req.files.avatar;
+    // console.log(req.files,Username,Gmail,Password,ConfirmPassword);
 
+    if(!Username || !Gmail || !Password || !ConfirmPassword|| !file)
+    {
+        return res.status(400).send({message:"Fill all Fields",type:2})
     }
     else if(Password!==ConfirmPassword){
-        return res.send({message:"Confirm Password doesnt match",type:3})
+        return res.status(402).send({message:"Confirm Password doesnt match",type:3})
     }
     try{
         const result=await UserModel.findOne({Gmail:Gmail})
@@ -19,15 +23,16 @@ const Register=async(req,res)=>{
             throw new Error("Email already exists")
         }
         const hashpassword=await hash(Password,10);
-        // console.log(hashpassword)
-        const new_user=new UserModel({
-            Username:Username,
-            Gmail:Gmail,
-            Password:hashpassword,
+        cloudinary.v2.uploader.upload(file.tempFilePath,(err,result)=>{
+            const new_user=new UserModel({
+                Username:Username,
+                Gmail:Gmail,
+                Password:hashpassword,
+                ProfileImage:result.url,
+            })
+            new_user.save();
+            res.status(200).json({message:`${Username} Registerted successfully`,type:1})
         })
-        const saved =new_user.save();
-        // console.log("New user saved");
-        res.status(200).json({message:`${Username} Registerted successfully`,type:1})
     }catch(e){
         res.status(500).json({error:e.message,type:2})
     }
@@ -54,6 +59,7 @@ console.log(user)
         const update_data=await UserModel.findOneAndUpdate({Gmail},{Refreshtoken:refreshToken},{new:true});
         sendRefreshToken(req,res,refreshToken);
         // sendAcessToken(req,res,accessToken);
+        console.log(user)
         res.status(200).send({
             message:`${user.Username} Logged in successfully`,
             type:1 ,

@@ -28,6 +28,9 @@ const UserModelSchema=new mongoose.Schema({
         type:Boolean,
         default:false
     },
+    ProfileImage:{
+        type:String
+    },
     likedProjects:
     [
         {

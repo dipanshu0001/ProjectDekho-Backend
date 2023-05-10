@@ -1,16 +1,17 @@
 const ProjectModel = require('../Model/UserProject');
 const cloudinary =  require('cloudinary');
 // const fetch = require('node-fetch');
-const request = require('request');
+// const request = require('request');
 const axios = require('axios');
 const AddProject = async (req, res) => {
-    // const file = req.files.Image;
-    const { Name, Description, Github_react,Github_node, Contact, Deployed_link} = req.body;
+    const file = req.files.Image;
+    const { Name, Description, Github_react,Github_node, Contact, Deployed_link,Industry,Monetized,Build,Minprice,Maxprice} = req.body;
   console.log(req.body,req.files);
-    if (!Name || !Description || !Contact || !Deployed_link ) {
+    if (!Name || !Description || !Contact || !Deployed_link ||!Industry || !Monetized||!Build || !Minprice || !Maxprice) {
         return res.status(400).send({ message: "Fill All Fileds", type: 2 })
     }
-    else if(!Github_react && !Github_node){
+    else if(!Github_react && !Github_node)
+    {
       return res.status(400).send({ message: "Fill Github Links", type: 2 })
     }
     try {
@@ -24,14 +25,18 @@ const AddProject = async (req, res) => {
             Github_node,
             Contact,
             Deployed_link,
-            // Image:result.url,
-            isFullStack:value
+            Image:result.url,
+            isFullStack:value,
+            Build,
+            Industry,
+            Monetized,
+            Minprice,
+            Maxprice,
+
         })
         new_document.save();
         res.status(200).send({ message: "Project Uploaded Sucessfully", type: 1 });
     }) 
-
-
     } catch (e) {
       console.log(e.message)
         res.status(500).send({ message: "Internal Server Error", type: 3 })

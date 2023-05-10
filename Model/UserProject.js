@@ -53,6 +53,22 @@ const ProjectSchema = new mongoose.Schema({
         type:Number,
         default:0
     },
+    Industry:{
+        type:String
+    },
+    Monetized:{
+        type:String
+    },
+    Build:{
+        type:String
+    },
+    Minprice:{
+        type:String
+    },
+    Maxprice:{
+        type:String
+    },
+    
     likePeople:
     [
         {
