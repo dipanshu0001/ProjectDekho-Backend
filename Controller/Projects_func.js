@@ -9,8 +9,22 @@ const getAllProjects = async (req, res) => {
         res.status(500).json({ error: error.message })
     }
 }
+
+const Get_ParticularProject=async(req,res)=>{
+    const{_id}=req.body
+    console.log(req.body)
+    try{
+        const result=await projectModel.findOne({_id:_id})
+        console.log(result)
+        return res.status(200).send({project:result})
+    }catch(err){
+        console.log(err)
+        res.status(500).json({message:"Internal Server error",type:2})
+    }
+}
 const comment_section_handler = async (req, res) => {
     try {
+        console.log(req.params);
         const id = req.params.id
         const userid = req.params.user
         // console.log(id)
@@ -19,8 +33,8 @@ const comment_section_handler = async (req, res) => {
         const finduser_who_comment = await userModel.findOne({ Uid: userid })
         await projectDetails.comment_handle(finduser_who_comment.Uid, req.body.comment);
         await projectDetails.save();
-        const result= await projectModel.findOne({ _id: id })
-        res.status(200).json({new_comments:result.comments})
+        const result = await projectModel.findOne({ _id: id })
+        res.status(200).json({ new_comments: result.comments })
     } catch (error) {
         res.status(500).json({ error: error.message })
     }
@@ -39,19 +53,18 @@ const like_count_handler = async (req, res) => {
             const finduser_who_liked_project = await userModel.findOne({ Uid: userid })
             // console.log(finduser_who_liked_project)
             const alllikedPeople = liked_project.likePeople;
-
+            //!CHECKING IF USER HAS ALREADY LIKED THEN DONT INCREASE THE LIKE AND PUSH SAME INSIDE IT AGAIN
             for (let index = 0; index < alllikedPeople.length; index++) {
                 // console.log(finduser_who_liked_project.Uid)
                 if (finduser_who_liked_project.Uid === alllikedPeople[index].Uid) {
                     console.log("alreadyPresent")
                     return res.status(500).json("already liked ");
                 }
-
             }
             const dislikearray = liked_project.dislikePeople;
             const new_dislike = dislikearray.filter(ele => ele.Uid !== userid)
             const disliked = { dislikePeople: new_dislike }
-            await projectModel.updateOne({ _id: id }, {dislikePeople: disliked }, { new: true })
+            await projectModel.updateOne({ _id: id }, { dislikePeople: disliked }, { new: true })
             await finduser_who_liked_project.increaseCount(liked_project._id)
             await finduser_who_liked_project.save();
             // console.log(finduser_who_liked_project)
@@ -80,7 +93,7 @@ const like_count_handler = async (req, res) => {
             const new_like = likearray.filter(ele => ele.Uid !== userid)
             const liked = { likePeople: new_like }
             console.log(liked);
-            await projectModel.updateOne({ _id: id }, { likePeople:liked }, { new: true })
+            await projectModel.updateOne({ _id: id }, { likePeople: liked }, { new: true })
             await finduser_who_disliked_project.decreaseCount(disliked_project._id)
             await finduser_who_disliked_project.save();
             await disliked_project.decreaseCount(finduser_who_disliked_project.Uid, finduser_who_disliked_project.Username);
@@ -136,4 +149,10 @@ const find_already_liked = async (req, res) => {
     }
 }
 
-module.exports = { getAllProjects, like_count_handler, comment_section_handler, find_already_liked, find_already_disliked }
+module.exports = { getAllProjects,
+     like_count_handler, 
+     comment_section_handler, 
+     find_already_liked, 
+     find_already_disliked,
+     Get_ParticularProject
+    }

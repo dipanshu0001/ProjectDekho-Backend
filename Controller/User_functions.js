@@ -1,13 +1,15 @@
 const ProjectModel = require('../Model/UserProject');
 const cloudinary =  require('cloudinary');
+const userModel = require('../Model/UserModel')
 // const fetch = require('node-fetch');
 // const request = require('request');
 const axios = require('axios');
+const UserModel = require('../Model/UserModel');
 const AddProject = async (req, res) => {
     const file = req.files.Image;
-    const { Name, Description, Github_react,Github_node, Contact, Deployed_link,Industry,Monetized,Build,Minprice,Maxprice} = req.body;
+    const { Name, Description, Github_react,Github_node, Contact, Uid,Deployed_link,Industry,Monetized,Build,Minprice,Maxprice} = req.body;
   console.log(req.body,req.files);
-    if (!Name || !Description || !Contact || !Deployed_link ||!Industry || !Monetized||!Build || !Minprice || !Maxprice) {
+    if (!Name || !Description || !Contact || !Deployed_link ||!Industry || !Monetized||!Build || !Minprice || !Maxprice||!Uid) {
         return res.status(400).send({ message: "Fill All Fileds", type: 2 })
     }
     else if(!Github_react && !Github_node)
@@ -17,15 +19,18 @@ const AddProject = async (req, res) => {
     try {
       let value=(Github_react!=="" && Github_node!=="")
       cloudinary.v2.uploader.upload(file.tempFilePath, (err, result) => {
+        // console.log(result.url)
+        // console.log(err)
+        if(err)console.log(err)
         const new_document = new ProjectModel({
-          uid:"UPLOAD USER KI UID AYEGI IDHER ",
+            Uid:Uid,
             Name,
             Description,
             Github_react,
             Github_node,
             Contact,
             Deployed_link,
-            Image:result.url,
+            // Image:result.url,
             isFullStack:value,
             Build,
             Industry,
@@ -181,7 +186,27 @@ const CheckReactRepo=async(req,res)=>{
 const CheckNodeRepo=async(req,res)=>{
   res.send({message:"Node Repo contain Node related Code",type:1})
 }
+const Get_User=async(req,res)=>{
+  try{
+    const {uid}=req.body;
+    const result=await UserModel.findOne({Uid:uid})
+    return res.status(200).send({user:result})
+  }catch(e){
+    res.status(500).send({message:"Internal Server Error",type:2})
+  }
+}
+const SaveProject=async(req,res)=>{
+  try{
+    const{_id,Uid}=req.params; //! _id ---> Project ki _id jo save kerna hai,Uid --> User ki Uid jiske SavedProjects mai push kerni hai ye _id
+    const userData=await User
 
+
+  }catch(Err){
+    console.log(Err.message)
+    res.status(500).send({message:"Internal Server Error",type:2})
+  }
+
+}
 
 
 module.exports = {
@@ -189,7 +214,8 @@ module.exports = {
     CheckReactRepo,
     CheckNodeRepo,
     CheckReactRepoMiddleware,
-    CheckNodeRepoMiddleware
+    CheckNodeRepoMiddleware,
+    Get_User
 
 }
 

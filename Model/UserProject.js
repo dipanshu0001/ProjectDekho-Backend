@@ -3,7 +3,7 @@ const {v4:uuidv4}=require('uuid');
 
 
 const ProjectSchema = new mongoose.Schema({
-    uid: {
+    Uid: {
         type: String,
         default: uuidv4
     },
@@ -128,6 +128,7 @@ ProjectSchema.methods.comment_handle=async function(_id,comment){
     }
   
 }
+
 ProjectSchema.methods.increaseCount=async function(_id,username){
     try{
         var new_people = { Uid: _id, username: username };
@@ -137,10 +138,10 @@ ProjectSchema.methods.increaseCount=async function(_id,username){
         await this.save();
         return this.like;
   
-    }catch(error){
+    }catch(error)
+    {
         console.log(error);
     }
-  
 }
 ProjectSchema.methods.decreaseCount=async function(_id,username){
     try{
