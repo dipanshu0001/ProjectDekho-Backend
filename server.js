@@ -12,6 +12,7 @@ const messageRoutes = require("./Routes/messageRoutes");
 dotenv.config();
 const app = express();
 app.use(cookieParser());
+
 app.use(
   cors({
     origin: "http://localhost:3000",

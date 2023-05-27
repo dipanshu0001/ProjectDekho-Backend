@@ -197,15 +197,52 @@ const Get_User=async(req,res)=>{
 }
 const SaveProject=async(req,res)=>{
   try{
-    const{_id,Uid}=req.params; //! _id ---> Project ki _id jo save kerna hai,Uid --> User ki Uid jiske SavedProjects mai push kerni hai ye _id
-    const userData=await User
-
-
+    const{_id,Uid}=req.body; //! _id ---> Project ki _id jo save kerna hai,Uid --> User ki Uid jiske SavedProjects mai push kerni hai ye _id
+    const userData=await userModel.findOne({Uid});
+    const newSavedProjects=await userData.handleSave(_id);
+    await userData.save();
+  res.status(200).send({message:"Project saved successfully",type:1,newSavedProjects});
   }catch(Err){
     console.log(Err.message)
     res.status(500).send({message:"Internal Server Error",type:2})
   }
 
+}
+const unSaveProject=async(req,res)=>{
+  try{
+    const{_id,Uid}=req.body; //! _id ---> Project ki _id jo save kerna hai,Uid --> User ki Uid jiske SavedProjects mai push kerni hai ye _id
+    const userData=await userModel.findOne({Uid});
+    const newSavedProjects=await userData.handleUnSave(_id);
+    await userData.save();
+  res.status(200).send({message:"Project Removed from Saved List successfullly",type:1,newSavedProjects})
+  }catch(Err){
+    console.log(Err.message)
+    res.status(500).send({message:"Internal Server Error",type:2})
+  }
+
+}
+
+const userFollow=async(req,res)=>{
+  const {Login_user_id,_id,type}=req.params;
+  try{
+
+    const login_user_detail=await UserModel.findOne({_id:Login_user_id})
+    const user_detail=await UserModel.findOne({_id:_id})
+    console.log(login_user_detail.Username,user_detail.Username)
+    if(type==="0"){
+    const updated_login_user_following_list=await login_user_detail.handleFollowing(_id);
+    const updated_user_follower_list=await user_detail.handleFollowers(Login_user_id);
+    return res.status(200).json({message:`Now Following to ${user_detail.Username} `,type:1})
+    }
+    else{
+      const updated_login_user_following_list=await login_user_detail.handleUnFollowing(_id)
+      const updated_user_follower_list=await user_detail.handleUnFollowers(Login_user_id)
+      return res.status(200).json({message:`Not Following ${user_detail.Username}`,type:2})
+    }
+  }catch (error){
+    console.log(error)
+    res.status(500).send({message:"Internal Server Error please try again later",type:3})
+  }
 }
 
 
@@ -215,7 +252,10 @@ module.exports = {
     CheckNodeRepo,
     CheckReactRepoMiddleware,
     CheckNodeRepoMiddleware,
-    Get_User
+    Get_User,
+    SaveProject,
+    unSaveProject,
+    userFollow
 
 }
 
