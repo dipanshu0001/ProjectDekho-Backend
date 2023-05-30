@@ -57,7 +57,7 @@ const server = app.listen(4000, () =>
 
 const io = new Server(server, {
   cors: {
-    origin: process.env.ORIGIN,
+    origin:"http://localhost:3000",
     Credential: true,
   },
 });
