@@ -134,9 +134,9 @@ ProjectSchema.methods.increaseCount=async function(_id,username){
         var new_people = { Uid: _id, username: username };
        
         this.likePeople.push(new_people);
-        this.like = this.like+1;
+        // this.like = this.like+1;
         await this.save();
-        return this.like;
+        return this.likePeople;
   
     }catch(error)
     {
@@ -145,12 +145,19 @@ ProjectSchema.methods.increaseCount=async function(_id,username){
 }
 ProjectSchema.methods.decreaseCount=async function(_id,username){
     try{
-        var new_people = { Uid: _id, username: username };
-       
-        this.dislikePeople.push(new_people);
-        this.dislike = this.dislike+1;
+        // var new_people = { Uid: _id, username: username };
+       const new_like=[];
+        // likePeople=this.likePeople.filter(ele=>ele.Uid!==_id)
+        this.likePeople.forEach((ele)=>{
+            if(ele.Uid!==_id){
+                new_like.push(ele);
+            }
+        })
+        // console.log(new_like)
+        this.likePeople=new_like
+        // this.dislike = this.dislike+1;
         await this.save();
-        return this.like;
+        return new_like;
   
     }catch(error){
         console.log(error);

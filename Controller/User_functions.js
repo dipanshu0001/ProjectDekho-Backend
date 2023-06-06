@@ -189,7 +189,7 @@ const CheckNodeRepo=async(req,res)=>{
 const Get_User=async(req,res)=>{
   try{
     const {uid}=req.body;
-    const result=await UserModel.findOne({Uid:uid})
+    const result=await UserModel.findOne({Uid:uid},{Refreshtoken:0,Password:0})
     return res.status(200).send({user:result})
   }catch(e){
     res.status(500).send({message:"Internal Server Error",type:2})
@@ -223,22 +223,26 @@ const unSaveProject=async(req,res)=>{
 }
 
 const userFollow=async(req,res)=>{
-  const {Login_user_id,_id,type}=req.params;
+
+  const {Login_user_id,Uid,type}=req.params;
+  console.log(req.params,"params")
   try{
 
-    const login_user_detail=await UserModel.findOne({_id:Login_user_id})
-    const user_detail=await UserModel.findOne({_id:_id})
-    console.log(login_user_detail.Username,user_detail.Username)
+    const login_user_detail=await UserModel.findOne({Uid:Login_user_id})
+    const user_detail=await UserModel.findOne({Uid:Uid})
+    // console.log(login_user_detail.Username,user_detail.Username)
+    console.log(user_detail,"userdetails")
     if(type==="0"){
-    const updated_login_user_following_list=await login_user_detail.handleFollowing(_id);
+    const updated_login_user_following_list=await login_user_detail.handleFollowing(Uid);
     const updated_user_follower_list=await user_detail.handleFollowers(Login_user_id);
-    return res.status(200).json({message:`Now Following to ${user_detail.Username} `,type:1})
+    return res.status(200).json({message:`Following  ${user_detail.Username}`,type:1,new_list:updated_login_user_following_list})
     }
     else{
-      const updated_login_user_following_list=await login_user_detail.handleUnFollowing(_id)
+      const updated_login_user_following_list=await login_user_detail.handleUnFollowing(Uid)
       const updated_user_follower_list=await user_detail.handleUnFollowers(Login_user_id)
-      return res.status(200).json({message:`Not Following ${user_detail.Username}`,type:2})
+      return res.status(200).json({message:`Unfollowed ${user_detail.Username}`,type:1,new_list:updated_login_user_following_list})
     }
+    res.send({message:"fdfa",type:1,new_list:[]})
   }catch (error){
     console.log(error)
     res.status(500).send({message:"Internal Server Error please try again later",type:3})

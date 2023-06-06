@@ -24,7 +24,7 @@ const sendRefreshToken = (req, res, refreshToken) => {
     res.cookie("refreshToken", refreshToken, {
         httpOnly: false,
         path: "/Api/RefreshToken",
-        SameSite:"None"
+        // SameSite:"None"
         // ! is path ke liye hi yeh cookie bhejega client ager route is path se start hoga tabi hi cookie ayehi backend mai
         //! or apna cookie parser parse ker payega us cookie ko
     })

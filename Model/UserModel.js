@@ -82,12 +82,10 @@ const UserModelSchema = new mongoose.Schema({
 })
 UserModelSchema.methods.increaseCount = async function (_id) {
     try {
-        console.log(_id)
+        // console.log(_id)
         var new_people = { _id: _id };
 
         this.likedProjects.push(new_people);
-
-
         await this.save();
 
         return this.likedProjects;
@@ -97,14 +95,11 @@ UserModelSchema.methods.increaseCount = async function (_id) {
     }
 }
 UserModelSchema.methods.decreaseCount = async function (_id) {
-    try {
-        var new_people = { _id: _id };
-
-        this.dislikedProjects.push(new_people);
-
+    try {   
+        this.likedProjects=this.likedProjects.filter(ele=>ele._id!==_id)
+        // console.log(this.likedProjects,"like Projects waala scene hai ")
         await this.save();
-        return this.dislikedProjects;
-
+        return this.likedProjects;
     } catch (error) {
         console.log(error);
     }
