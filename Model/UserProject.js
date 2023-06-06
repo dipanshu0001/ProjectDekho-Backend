@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const {v4:uuidv4}=require('uuid');    
+const { v4: uuidv4 } = require('uuid');
 
 
 const ProjectSchema = new mongoose.Schema({
@@ -19,151 +19,177 @@ const ProjectSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
-    Contact:{
-        type:String,
+    Contact: {
+        type: String,
         required: true,
     },
     Deployed_link: {
         type: String,
         // required: true,
     },
-    Github_node:{
-        type:String
+    Github_node: {
+        type: String
     },
     Image: {
         type: String,
         // required: true,
     },
-    isFullStack:{
-        type:Boolean,
-        default:false
+    isFullStack: {
+        type: Boolean,
+        default: false
     },
     timestamp:
     {
-        type:Date,
-        default:Date.now()
+        type: Date,
+        default: Date.now()
     },
     like:
     {
-        type:Number,
-        default:0
+        type: Number,
+        default: 0
     },
     dislike:
     {
-        type:Number,
-        default:0
+        type: Number,
+        default: 0
     },
-    Industry:{
-        type:String
-    },
-    Monetized:{
-        type:String
-    },
-    Build:{
-        type:String
-    },
-    Minprice:{
-        type:String
-    },
-    Maxprice:{
-        type:String
-    },
-    
-    likePeople:
+    Vieweduser: 
     [
         {
+
             Uid:
             {
-                type:String
-            },
-            username:
-            {
-                type:String
-            }
-        }
-    ],
-    dislikePeople:
-    [
-        {
-            Uid:
-            {
-                type:String
-            },
-            username:
-            {
-                type:String
-            }
-        }
-    ],
-    comments:
-    [
-        {
-            Uid:
-            {
-                type:String
-            },
-            comment:
-            {
-                type:String
+                type: String
             },
             Timestamp:
             {
-                type:Date,
-                default:Date.now()
-            }      
+                type: Date,
+                default: Date.now()
+            }
         }
-    ]
+    ],
+    Industry: {
+        type: String
+    },
+    Monetized: {
+        type: String
+    },
+    Build: {
+        type: String
+    },
+    Minprice: {
+        type: String
+    },
+    Maxprice: {
+        type: String
+    },
+
+    likePeople:
+        [
+            {
+                Uid:
+                {
+                    type: String,
+                    unique:true
+                },
+                username:
+                {
+                    type: String
+                }
+            }
+        ],
+    dislikePeople:
+        [
+            {
+                Uid:
+                {
+                    type: String
+                },
+                username:
+                {
+                    type: String
+                }
+            }
+        ],
+    comments:
+        [
+            {
+                Uid:
+                {
+                    type: String
+                },
+                comment:
+                {
+                    type: String
+                },
+                Timestamp:
+                {
+                    type: Date,
+                    default: Date.now()
+                }
+            }
+        ]
 })
-ProjectSchema.methods.comment_handle=async function(_id,comment){
-    try{
+ProjectSchema.methods.comment_handle = async function (_id, comment) {
+    try {
         var new_comment = { Uid: _id, comment: comment };
-       
+
         this.comments.push(new_comment);
-       
+
         await this.save();
         return this.comments;
-  
-    }catch(error){
+
+    } catch (error) {
         console.log(error);
     }
-  
+
 }
 
-ProjectSchema.methods.increaseCount=async function(_id,username){
-    try{
+ProjectSchema.methods.increaseCount = async function (_id, username) {
+    try {
         var new_people = { Uid: _id, username: username };
-       
+
         this.likePeople.push(new_people);
         // this.like = this.like+1;
         await this.save();
         return this.likePeople;
-  
-    }catch(error)
-    {
+
+    } catch (error) {
         console.log(error);
     }
 }
-ProjectSchema.methods.decreaseCount=async function(_id,username){
-    try{
+ProjectSchema.methods.decreaseCount = async function (_id, username) {
+    try {
         // var new_people = { Uid: _id, username: username };
-       const new_like=[];
+        const new_like = [];
         // likePeople=this.likePeople.filter(ele=>ele.Uid!==_id)
-        this.likePeople.forEach((ele)=>{
-            if(ele.Uid!==_id){
+        this.likePeople.forEach((ele) => {
+            if (ele.Uid !== _id) {
                 new_like.push(ele);
             }
         })
         // console.log(new_like)
-        this.likePeople=new_like
+        this.likePeople = new_like
         // this.dislike = this.dislike+1;
         await this.save();
         return new_like;
-  
-    }catch(error){
+
+    } catch (error) {
         console.log(error);
     }
-  
-  }
-const ProjectModel=new mongoose.model("PorjectDetails",ProjectSchema);
 
-module.exports=ProjectModel;
+}
+ProjectSchema.methods.addNewViewer=async function(uid){
+    try{
+        this.Vieweduser.push({Uid:uid});
+        await this.save();
+        return this.Vieweduser
+    }catch(err){
+        console.log(err.message);
+    }
+}
+
+
+const ProjectModel = new mongoose.model("PorjectDetails", ProjectSchema);
+
+module.exports = ProjectModel;

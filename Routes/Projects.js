@@ -5,7 +5,8 @@ const {getAllProjects,
     comment_section_handler,
     find_already_liked,
     find_already_disliked,
-    Get_ParticularProject
+    Get_ParticularProject,
+    handleviewcount
 }=require('../Controller/Projects_func')
 
 
@@ -15,6 +16,7 @@ Router.get('/allProjects',getAllProjects)
 .post('/Already_liked',find_already_liked)
 .post('/Already_disliked',find_already_disliked)
 .post('/Get_ParticularProject',Get_ParticularProject)
+.post('/Viewcount',handleviewcount)
 
 
 module.exports=Router
