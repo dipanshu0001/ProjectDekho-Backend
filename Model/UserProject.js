@@ -72,7 +72,7 @@ const ProjectSchema = new mongoose.Schema({
         type: String
     },
     Monetized: {
-        type: String
+        type: Boolean,
     },
     Build: {
         type: String

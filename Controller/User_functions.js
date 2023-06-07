@@ -224,14 +224,14 @@ const unSaveProject=async(req,res)=>{
 
 const userFollow=async(req,res)=>{
 
-  const {Login_user_id,Uid,type}=req.params;
+  const {Login_user_id,type,Uid}=req.params;
   console.log(req.params,"params")
   try{
 
     const login_user_detail=await UserModel.findOne({Uid:Login_user_id})
     const user_detail=await UserModel.findOne({Uid:Uid})
-    // console.log(login_user_detail.Username,user_detail.Username)
-    console.log(user_detail,"userdetails")
+    console.log(login_user_detail.Username,user_detail.Username)
+    // console.log(user_detail,"userdetails")
     if(type==="0"){
     const updated_login_user_following_list=await login_user_detail.handleFollowing(Uid);
     const updated_user_follower_list=await user_detail.handleFollowers(Login_user_id);
@@ -240,6 +240,7 @@ const userFollow=async(req,res)=>{
     else{
       const updated_login_user_following_list=await login_user_detail.handleUnFollowing(Uid)
       const updated_user_follower_list=await user_detail.handleUnFollowers(Login_user_id)
+      console.log(updated_user_follower_list)
       return res.status(200).json({message:`Unfollowed ${user_detail.Username}`,type:1,new_list:updated_login_user_following_list})
     }
     res.send({message:"fdfa",type:1,new_list:[]})

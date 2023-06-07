@@ -152,10 +152,10 @@ UserModelSchema.methods.handleUnFollowers=async function(_id){
 }
 
 
-UserModelSchema.methods.handleFollowing=async function(_id){
+UserModelSchema.methods.handleFollowing=async function(Uid){
     try{
         const new_following={
-            User_id:_id
+            User_id:Uid
         }
         this.Following.push(new_following);
         await this.save();
@@ -166,9 +166,9 @@ UserModelSchema.methods.handleFollowing=async function(_id){
     }
 
 }
-UserModelSchema.methods.handleUnFollowing=async(_id)=>{
+UserModelSchema.methods.handleUnFollowing=async(Uid)=>{
     try{
-        this.Following=this.Following.filter(item=>item.User_id!==_id);
+        this.Following=this.Following.filter(item=>item.User_id!==Uid);
         this.save();
         return this.Following
     }catch(err){
