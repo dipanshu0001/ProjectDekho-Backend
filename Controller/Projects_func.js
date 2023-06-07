@@ -161,7 +161,7 @@ const handleviewcount = async (req, res) => {
         // console.log(result.Viewduser)
         // // await projectModel.updateOne({_id:_id},{$set:{Viewcount:result.Viewcount+1}},{new:true});
         const user = result.Vieweduser.find(ele => ele.Uid === user_id)
-        if (user !== undefined) res.send("already view user");
+        if (user !== undefined) return  res.send("already view user");
         const new_viewed_list = await result.addNewViewer(user_id);
         // console.log(new_viewed_list)
         res.status(200).send({ message: "view count increased successfully", new_list_length: new_viewed_list.length })
