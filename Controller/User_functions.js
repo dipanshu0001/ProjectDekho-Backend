@@ -30,15 +30,14 @@ const AddProject = async (req, res) => {
             Github_node,
             Contact,
             Deployed_link,
-            // Image:result.url,
+            Image:result.url,
             isFullStack:value,
-            Build,
+            Build:parseInt(Build),
             Industry,
             Monetized,
-            Minprice,
-            Maxprice,
-
-        })
+            Minprice:parseInt(Minprice),
+            Maxprice:parseInt(Maxprice),
+          })
         new_document.save();
         res.status(200).send({ message: "Project Uploaded Sucessfully", type: 1 });
     }) 

@@ -5,7 +5,7 @@ const { v4: uuidv4 } = require('uuid');
 const ProjectSchema = new mongoose.Schema({
     Uid: {
         type: String,
-        default: uuidv4
+        // default: uuidv4
     },
     Name: {
         type: String,
@@ -73,15 +73,16 @@ const ProjectSchema = new mongoose.Schema({
     },
     Monetized: {
         type: Boolean,
+        default:false
     },
     Build: {
-        type: String
+        type: Number
     },
     Minprice: {
-        type: String
+        type: Number
     },
     Maxprice: {
-        type: String
+        type: Number
     },
 
     likePeople:

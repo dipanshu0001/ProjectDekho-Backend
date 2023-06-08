@@ -1,8 +1,10 @@
 const projectModel = require('../Model/UserProject')
 const userModel = require('../Model/UserModel')
 const getAllProjects = async (req, res) => {
+    const {limit}=req.params
     try {
-        const allProjects = await projectModel.find({}, { Github_react: 0, Github_node: 0 });
+        console.log(limit)
+        const allProjects = await projectModel.find({}, { Github_react: 0, Github_node: 0 }).limit(parseInt(limit));
         res.status(200).json(allProjects);
     } catch (error) {
 
