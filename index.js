@@ -16,6 +16,7 @@ app.use(cookieParser());
 app.use(
   cors({
     origin: "http://localhost:3000",
+    // origin:"https://project-dekho.vercel.app",
     credentials: true,
   })
 );
@@ -47,7 +48,7 @@ mongoose
   .then((data) => console.log("database connected succesfully👍"))
   .catch((err) => console.error(err));
 app.use("/Api/User", require("./Routes/User.js"));
-app.use("/Api", require("./Routes/Login_Register.js"));
+app.use("/Api", require("./Routes/Login_Register"));
 app.use("/Api/Projects", require("./Routes/Projects"));
 
 app.use("/message", messageRoutes);
@@ -59,6 +60,7 @@ const server = app.listen(4000, () =>
 const io = new Server(server, {
   cors: {
     origin:"http://localhost:3000",
+    // origin:"https://project-dekho.vercel.app",
     Credential: true,
   },
 });
