@@ -47,7 +47,7 @@ mongoose
   .then((data) => console.log("database connected succesfully👍"))
   .catch((err) => console.error(err));
 app.use("/Api/User", require("./Routes/User.js"));
-app.use("/Api", require("./Routes/Login_register.js"));
+app.use("/Api", require("./Routes/Login_Register.js"));
 app.use("/Api/Projects", require("./Routes/Projects"));
 
 app.use("/message", messageRoutes);
